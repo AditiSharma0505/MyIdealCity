@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>File a Complaint - My Ideal City</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-blue: #2563eb;
+            --primary-green: #059669;
+            --light-blue: #dbeafe;
+            --dark-blue: #1e40af;
+            --gradient: linear-gradient(135deg, var(--primary-blue), var(--primary-green));
+            --text-dark: #1f2937;
+            --text-light: #6b7280;
+            --white: #ffffff;
+            --shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            --error: #ef4444;
+            --success: #10b981;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f5f7fa;
+            min-height: 100vh;
+        }
+
+        /* Navigation */
+        .navbar {
+            background: var(--white);
+            box-shadow: var(--shadow);
+            padding: 1rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: bold;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--text-dark);
+            font-weight: 500;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .nav-links a:hover, .nav-links a.active {
+            background: var(--light-blue);
+            color: var(--primary-blue);
+        }
+
+        /* Main Content */
+        .container {
+            max-width: 800px;
+            margin: 3rem auto;
+            padding: 0 2rem;
+        }
+
+        .page-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .page-title {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .page-subtitle {
+            color: var(--text-light);
+            font-size: 1.1rem;
+        }
+
+        .alert {
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+
+        .alert-success {
+            background: #d1fae5;
+            color: var(--success);
+            border: 1px solid var(--success);
+        }
+
+        .alert-error {
+            background: #fee2e2;
+            color: var(--error);
+            border: 1px solid var(--error);
+        }
+
+        .complaint-form {
+            background: var(--white);
+            padding: 2.5rem;
+            border-radius: 16px;
+            box-shadow: var(--shadow);
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: var(--text-dark);
+        }
+
+        .required {
+            color: var(--error);
+        }
+
+        .form-input, .form-select, .form-textarea {
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid #e5e7eb;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+        }
+
+        .form-input:focus, .form-select:focus, .form-textarea:focus {
+            outline: none;
+            border-color: var(--primary-blue);
+        }
+
+        .form-textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+
+        .file-upload {
+            position: relative;
+        }
+
+        .file-upload input[type="file"] {
+            position: absolute;
+            opacity: 0;
+            width: 100%;
+            height: 100%;
+            cursor: pointer;
+        }
+
+        .file-upload-label {
+            display: block;
+            padding: 2rem;
+            border: 2px dashed #e5e7eb;
+            border-radius: 8px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .file-upload-label:hover {
+            border-color: var(--primary-blue);
+            background: var(--light-blue);
+        }
+
+        .file-selected {
+            margin-top: 0.5rem;
+            padding: 0.5rem;
+            background: #d1fae5;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            font-size: 0.9rem;
+            color: var(--success);
+        }
+
+        .form-actions {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 0.875rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background: var(--gradient);
+            color: var(--white);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(37, 99, 235, 0.3);
+        }
+
+        .btn-secondary {
+            background: #e5e7eb;
+            color: var(--text-dark);
+        }
+
+        .btn-secondary:hover {
+            background: #d1d5db;
+        }
+
+        @media (max-width: 768px) {
+            .complaint-form {
+                padding: 1.5rem;
+            }
+            .form-actions {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+<!-- Navigation -->
+<nav class="navbar">
+    <div class="nav-container">
+        <div class="logo">My Ideal City</div>
+        <ul class="nav-links">
+            <li><a href="{{ url_for('index') }}">Home</a></li>
+            <li><a href="{{ url_for('complaint_form') }}">File Complaint</a></li>
+            <li><a href="{{ url_for('dashboard') }}">Dashboard</a></li>
+            {% if session.get('user_id') %}
+            <li><a href="{{ url_for('logout_user') }}">Logout ({{ session.user_name }})</a></li>
+            {% else %}
+            <li><a href="{{ url_for('userlogin') }}">Login</a></li>
+            {% endif %}
+        </ul>
+    </div>
+</nav>
+
+    <!-- Main Content -->
+    <div class="container">
+        <div class="page-header">
+            <h1 class="page-title">File a Complaint</h1>
+            <p class="page-subtitle">Help us improve your city by reporting issues</p>
+        </div>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }}">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        <form class="complaint-form" id="complaintForm" method="POST" action="{{ url_for('submit_complaint') }}" enctype="multipart/form-data">
+            <div class="form-group">
+                <label for="name" class="form-label">Your Name <span class="required">*</span></label>
+                <input type="text" id="name" name="name" class="form-input" value="{{ session.get('user_name', '') }}" required>
+            </div>
+
+            <div class="form-group">
+                <label for="email" class="form-label">Your Email <span class="required">*</span></label>
+                <input type="email" id="email" name="email" class="form-input" required>
+            </div>
+
+            <div class="form-group">
+                <label for="locality" class="form-label">Locality/Area <span class="required">*</span></label>
+                <input type="text" id="locality" name="locality" class="form-input" value="{{ session.get('locality', '') }}" required>
+            </div>
+
+            <div class="form-group">
+                <label for="category" class="form-label">Complaint Category <span class="required">*</span></label>
+                <select id="category" name="category" class="form-select" required>
+                    <option value="">Select a category</option>
+                    <option value="Road">Road Issues</option>
+                    <option value="Sanitation">Sanitation</option>
+                    <option value="Water">Water Supply</option>
+                    <option value="Electricity">Electricity</option>
+                    <option value="Construction">Construction Work</option>
+                    <option value="Safety">Public Safety</option>
+                    <option value="Other">Other</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="complaint" class="form-label">Complaint Details <span class="required">*</span></label>
+                <textarea id="complaint" name="complaint" class="form-textarea" placeholder="Please provide detailed information about the issue..." required></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="evidence" class="form-label">Upload Evidence (Photo/Video) <span class="required">*</span></label>
+                <div class="file-upload">
+                    <input type="file" id="evidence" name="evidence" accept="image/*,video/*" required>
+                    <label for="evidence" class="file-upload-label">
+                        📁 Choose file or drag and drop
+                        <br><small>(Max 10MB - Images/Videos only)</small>
+                    </label>
+                </div>
+                <div id="fileSelected" class="file-selected" style="display: none;"></div>
+            </div>
+
+            <div class="form-actions">
+                <button type="button" class="btn btn-secondary" onclick="resetForm()">🔄 Reset Form</button>
+                <button type="submit" class="btn btn-primary" id="submitBtn">📤 Submit Complaint</button>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        document.getElementById('evidence').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            const fileSelected = document.getElementById('fileSelected');
+
+            if (file) {
+                if (file.size > 10 * 1024 * 1024) {
+                    alert('File size must be less than 10MB');
+                    this.value = '';
+                    fileSelected.style.display = 'none';
+                    return;
+                }
+
+                const allowedTypes = ['image/jpeg', 'image/png', 'image/gif', 'video/mp4', 'video/avi', 'video/mov'];
+                if (!allowedTypes.includes(file.type)) {
+                    alert('Please select a valid image or video file');
+                    this.value = '';
+                    fileSelected.style.display = 'none';
+                    return;
+                }
+
+                fileSelected.innerHTML = `Selected: ${file.name} (${(file.size / 1024 / 1024).toFixed(2)} MB)`;
+                fileSelected.style.display = 'block';
+            } else {
+                fileSelected.style.display = 'none';
+            }
+        });
+
+        function resetForm() {
+            if (confirm('Are you sure you want to reset the form? All data will be lost.')) {
+                document.getElementById('complaintForm').reset();
+                document.getElementById('fileSelected').style.display = 'none';
+            }
+        }
+
+        document.getElementById('complaintForm').addEventListener('submit', function(e) {
+            const submitBtn = document.getElementById('submitBtn');
+            submitBtn.innerHTML = '⏳ Submitting...';
+            submitBtn.disabled = true;
+        });
+    </script>
+</body>
+</html>

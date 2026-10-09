@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Complaint Details - My Ideal City</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-blue: #2563eb;
+            --primary-green: #059669;
+            --light-blue: #dbeafe;
+            --dark-blue: #1e40af;
+            --gradient: linear-gradient(135deg, var(--primary-blue), var(--primary-green));
+            --text-dark: #1f2937;
+            --text-light: #6b7280;
+            --white: #ffffff;
+            --shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            --error: #ef4444;
+            --success: #10b981;
+            --warning: #f59e0b;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f5f7fa;
+            color: var(--text-dark);
+            line-height: 1.6;
+        }
+
+        /* Navigation */
+        .navbar {
+            background: var(--white);
+            box-shadow: var(--shadow);
+            padding: 1rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .nav-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: bold;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--text-dark);
+            font-weight: 500;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            background: var(--light-blue);
+            color: var(--primary-blue);
+        }
+
+        .admin-badge {
+            background: var(--gradient);
+            color: var(--white);
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+
+        /* Container */
+        .container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 2rem;
+        }
+
+        /* Header */
+        .page-header {
+            background: var(--white);
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+
+        .page-title {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .complaint-id-badge {
+            display: inline-block;
+            background: var(--light-blue);
+            color: var(--primary-blue);
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+
+        /* Details Section */
+        .details-grid {
+            display: grid;
+            gap: 2rem;
+        }
+
+        .detail-card {
+            background: var(--white);
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+        }
+
+        .section-title {
+            font-size: 1.3rem;
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid var(--light-blue);
+            color: var(--primary-blue);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .info-item {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .info-label {
+            font-weight: 600;
+            color: var(--text-light);
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .info-value {
+            font-size: 1.1rem;
+            color: var(--text-dark);
+        }
+
+        /* Status Badge */
+        .status-badge {
+            display: inline-block;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            text-transform: capitalize;
+        }
+
+        .status-pending {
+            background: #fef2f2;
+            color: var(--error);
+        }
+
+        .status-in-progress {
+            background: #fffbeb;
+            color: var(--warning);
+        }
+
+        .status-resolved {
+            background: #f0fdf4;
+            color: var(--success);
+        }
+
+        /* Description */
+        .description-text {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            color: var(--text-dark);
+            background: #f9fafb;
+            padding: 1.5rem;
+            border-radius: 8px;
+            border-left: 4px solid var(--primary-blue);
+        }
+
+        /* Evidence Section */
+        .evidence-container {
+            text-align: center;
+            padding: 1rem;
+            background: #f9fafb;
+            border-radius: 8px;
+        }
+
+        .evidence-container img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            margin-top: 1rem;
+        }
+
+        .evidence-container video {
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            margin-top: 1rem;
+        }
+
+        .no-evidence {
+            padding: 2rem;
+            color: var(--text-light);
+            font-style: italic;
+        }
+
+        /* Action Buttons */
+        .action-section {
+            background: var(--white);
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .btn-back {
+            background: #e5e7eb;
+            color: var(--text-dark);
+        }
+
+        .btn-back:hover {
+            background: #d1d5db;
+        }
+
+        .btn-warning {
+            background: var(--warning);
+            color: var(--white);
+        }
+
+        .btn-warning:hover {
+            background: #e69500;
+        }
+
+        .btn-success {
+            background: var(--success);
+            color: var(--white);
+        }
+
+        .btn-success:hover {
+            background: #059669;
+        }
+
+        .btn-secondary {
+            background: #6b7280;
+            color: var(--white);
+        }
+
+        .btn-secondary:hover {
+            background: #4b5563;
+        }
+
+        @media (max-width: 768px) {
+            .info-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .action-section {
+                flex-direction: column;
+            }
+
+            .btn {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="logo">My Ideal City</div>
+            <ul class="nav-links">
+                <li><span class="admin-badge">👤 {{ session.get('official_name', 'Admin') }}</span></li>
+                <li><a href="{{ url_for('admin_dashboard') }}">Dashboard</a></li>
+                <li><a href="{{ url_for('admin_logout') }}">🚪 Logout</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="container">
+        <!-- Header -->
+        <div class="page-header">
+            <h1 class="page-title">Complaint Details</h1>
+            <span class="complaint-id-badge">#{{ complaint.id }}</span>
+        </div>
+
+        <!-- Details Grid -->
+        <div class="details-grid">
+            <!-- Basic Information -->
+            <div class="detail-card">
+                <h2 class="section-title">📋 Basic Information</h2>
+                <div class="info-grid">
+                    <div class="info-item">
+                        <span class="info-label">Complaint ID</span>
+                        <span class="info-value">#{{ complaint.id }}</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Status</span>
+                        <span class="status-badge status-{{ complaint.status|lower|replace(' ', '-') }}">
+                            {{ complaint.status }}
+                        </span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Category</span>
+                        <span class="info-value">{{ complaint.category }}</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Filed On</span>
+                        <span class="info-value">{{ complaint.created_at }}</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Locality</span>
+                        <span class="info-value">{{ complaint.locality }}</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Upvotes</span>
+                        <span class="info-value">👍 {{ complaint.upvotes }}</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Citizen Information -->
+            <div class="detail-card">
+                <h2 class="section-title">👤 Citizen Information</h2>
+                <div class="info-grid">
+                    <div class="info-item">
+                        <span class="info-label">Name</span>
+                        <span class="info-value">{{ complaint.name }}</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Email</span>
+                        <span class="info-value">{{ complaint.email }}</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Government ID Type</span>
+                        <span class="info-value">{{ complaint.gov_id_type or 'N/A' }}</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Government ID Number</span>
+                        <span class="info-value">{{ complaint.gov_id_number or complaint.user_id }}</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Complaint Description -->
+            <div class="detail-card">
+                <h2 class="section-title">💬 Complaint Description</h2>
+                <div class="description-text">
+                    {{ complaint.complaint }}
+                </div>
+            </div>
+
+            <!-- Evidence -->
+            <div class="detail-card">
+                <h2 class="section-title">📷 Evidence</h2>
+                <div class="evidence-container">
+                    {% if complaint.evidence_filename %}
+                        {% set file_ext = complaint.evidence_filename.split('.')[-1].lower() %}
+                        {% if file_ext in ['jpg', 'jpeg', 'png', 'gif', 'bmp', 'webp'] %}
+                            <img src="{{ url_for('static', filename='uploads/' + complaint.evidence_filename) }}" 
+                                 alt="Complaint Evidence">
+                        {% elif file_ext in ['mp4', 'avi', 'mov', 'wmv', 'webm'] %}
+                            <video controls>
+                                <source src="{{ url_for('static', filename='uploads/' + complaint.evidence_filename) }}" 
+                                        type="video/{{ file_ext }}">
+                                Your browser does not support the video tag.
+                            </video>
+                        {% else %}
+                            <p>📄 File: {{ complaint.evidence_filename }}</p>
+                            <a href="{{ url_for('static', filename='uploads/' + complaint.evidence_filename) }}" 
+                               class="btn btn-secondary" download>
+                                📥 Download File
+                            </a>
+                        {% endif %}
+                    {% else %}
+                        <p class="no-evidence">No evidence file uploaded</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="action-section">
+            <a href="{{ url_for('admin_dashboard') }}" class="btn btn-back">
+                ← Back to Dashboard
+            </a>
+            {% if complaint.status != 'In Progress' %}
+            <a href="{{ url_for('update_status', complaint_id=complaint.id, new_status='In Progress') }}" 
+               class="btn btn-warning">
+                🔄 Mark In Progress
+            </a>
+            {% endif %}
+            {% if complaint.status != 'Resolved' %}
+            <a href="{{ url_for('update_status', complaint_id=complaint.id, new_status='Resolved') }}" 
+               class="btn btn-success">
+                ✅ Mark Resolved
+            </a>
+            {% endif %}
+            {% if complaint.status != 'Pending' %}
+            <a href="{{ url_for('update_status', complaint_id=complaint.id, new_status='Pending') }}" 
+               class="btn btn-secondary">
+                ↩️ Reopen
+            </a>
+            {% endif %}
+        </div>
+    </div>
+</body>
+</html>

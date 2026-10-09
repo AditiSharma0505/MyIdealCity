@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - My Ideal City</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            }
+
+        :root {
+            --primary-blue: #2563eb;
+            --primary-green: #059669;
+            --light-blue: #dbeafe;
+            --dark-blue: #1e40af;
+            --gradient: linear-gradient(135deg, var(--primary-blue), var(--primary-green));
+            --text-dark: #1f2937;
+            --text-light: #6b7280;
+            --white: #ffffff;
+            --shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            --error: #ef4444;
+            --success: #10b981;
+            --warning: #f59e0b;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f5f7fa;
+            color: var(--text-dark);
+        }
+
+        /* Navigation */
+        .navbar {
+            background: var(--white);
+            box-shadow: var(--shadow);
+            padding: 1rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .nav-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: bold;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--text-dark);
+            font-weight: 500;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .nav-links a:hover, .nav-links a.active {
+            background: var(--light-blue);
+            color: var(--primary-blue);
+        }
+
+        .admin-badge {
+            background: var(--gradient);
+            color: var(--white);
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+
+        /* Container */
+        .container {
+            max-width: 1400px;
+            margin: 2rem auto;
+            padding: 0 2rem;
+        }
+
+        .page-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .page-title {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .page-subtitle {
+            color: var(--text-light);
+        }
+
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: var(--white);
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            transition: transform 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .stat-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            color: var(--white);
+        }
+
+        .stat-icon.total { background: var(--primary-blue); }
+        .stat-icon.pending { background: var(--error); }
+        .stat-icon.in-progress { background: var(--warning); }
+        .stat-icon.resolved { background: var(--success); }
+
+        .stat-content h3 {
+            font-size: 2rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .stat-content p {
+            color: var(--text-light);
+            font-size: 0.9rem;
+        }
+
+        /* Section Header */
+        .section-header {
+            background: var(--white);
+            padding: 1.5rem 2rem;
+            border-radius: 12px 12px 0 0;
+            box-shadow: var(--shadow);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            color: var(--text-dark);
+        }
+
+        /* Filters */
+        .filters {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .filter-select {
+            padding: 0.5rem 1rem;
+            border: 2px solid #e5e7eb;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: border-color 0.3s;
+        }
+
+        .filter-select:focus {
+            outline: none;
+            border-color: var(--primary-blue);
+        }
+
+        /* Table */
+        .table-container {
+            background: var(--white);
+            border-radius: 0 0 12px 12px;
+            box-shadow: var(--shadow);
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        thead {
+            background: #f9fafb;
+        }
+
+        th {
+            padding: 1rem 1.5rem;
+            text-align: left;
+            font-weight: 600;
+            color: var(--text-dark);
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            border-bottom: 2px solid #e5e7eb;
+            white-space: nowrap;
+        }
+
+        td {
+            padding: 1rem 1.5rem;
+            border-bottom: 1px solid #f3f4f6;
+            color: var(--text-dark);
+        }
+
+        tbody tr:hover {
+            background: #f9fafb;
+        }
+
+        tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* Complaint ID Badge */
+        .complaint-id {
+            font-family: monospace;
+            background: var(--light-blue);
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--primary-blue);
+        }
+
+        /* Status Badge */
+        .status-badge {
+            padding: 0.35rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            text-transform: capitalize;
+            display: inline-block;
+            white-space: nowrap;
+        }
+
+        .status-pending {
+            background: #fef2f2;
+            color: var(--error);
+        }
+
+        .status-in-progress {
+            background: #fffbeb;
+            color: var(--warning);
+        }
+
+        .status-resolved {
+            background: #f0fdf4;
+            color: var(--success);
+        }
+
+        /* Action Buttons */
+        .action-buttons {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+        }
+
+        .btn-warning {
+            background: var(--warning);
+            color: var(--white);
+        }
+
+        .btn-warning:hover {
+            background: #e69500;
+        }
+
+        .btn-success {
+            background: var(--success);
+            color: var(--white);
+        }
+
+        .btn-success:hover {
+            background: #059669;
+        }
+
+        .btn-secondary {
+            background: #e5e7eb;
+            color: var(--text-dark);
+        }
+
+        .btn-secondary:hover {
+            background: #d1d5db;
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 3rem;
+            color: var(--text-light);
+        }
+
+        @media (max-width: 1024px) {
+            th, td {
+                padding: 0.75rem 1rem;
+                font-size: 0.85rem;
+            }
+
+            .action-buttons {
+                flex-direction: column;
+            }
+
+            .btn {
+                width: 100%;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .section-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .filters {
+                width: 100%;
+                flex-direction: column;
+            }
+
+            .filter-select {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    {% if not session.get('admin_logged_in') %}
+        <script>window.location.href = "{{ url_for('admin_login') }}";</script>
+    {% endif %}
+
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="logo">My Ideal City</div>
+            <ul class="nav-links">
+                <li><span class="admin-badge">👤 {{ session.get('official_name', 'Admin') }}</span></li>
+                <li><a href="{{ url_for('admin_dashboard') }}" class="active">Dashboard</a></li>
+                <li><a href="{{ url_for('admin_logout') }}">🚪 Logout</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="container">
+        <div class="page-header">
+            <h1 class="page-title">Admin Dashboard</h1>
+            <p class="page-subtitle">Manage and track all citizen complaints</p>
+        </div>
+
+        <!-- Stats Grid -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-icon total">📊</div>
+                <div class="stat-content">
+                    <h3>{{ total }}</h3>
+                    <p>Total Complaints</p>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon pending">⏳</div>
+                <div class="stat-content">
+                    <h3>{{ pending }}</h3>
+                    <p>Pending Review</p>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon in-progress">🔄</div>
+                <div class="stat-content">
+                    <h3>{{ in_progress }}</h3>
+                    <p>In Progress</p>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon resolved">✅</div>
+                <div class="stat-content">
+                    <h3>{{ resolved }}</h3>
+                    <p>Resolved</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Complaints Section -->
+        <div class="section-header">
+            <h2 class="section-title">All Complaints</h2>
+            <div class="filters">
+                <select class="filter-select" id="statusFilter" onchange="filterComplaints()">
+                    <option value="">All Status</option>
+                    <option value="Pending">Pending</option>
+                    <option value="In Progress">In Progress</option>
+                    <option value="Resolved">Resolved</option>
+                </select>
+                <select class="filter-select" id="categoryFilter" onchange="filterComplaints()">
+                    <option value="">All Categories</option>
+                    <option value="Road">Road Issues</option>
+                    <option value="Sanitation">Sanitation</option>
+                    <option value="Water">Water Supply</option>
+                    <option value="Electricity">Electricity</option>
+                    <option value="Construction">Construction Work</option>
+                    <option value="Safety">Public Safety</option>
+                    <option value="Other">Other</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>User ID</th>
+                        <th>Name</th>
+                        <th>Category</th>
+                        <th>Complaint</th>
+                        <th>Status</th>
+                        <th>Locality</th>
+                        <th>Date</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% if complaints %}
+                        {% for complaint in complaints %}
+                        <tr>
+                            <td><span class="complaint-id">{{ complaint.id }}</span></td>
+                            <td>{{ complaint.get('gov_id_type', 'N/A') }}: {{ complaint.get('gov_id_number', complaint.user_id) }}</td>
+                            <td>{{ complaint.name }}</td>
+                            <td>{{ complaint.category }}</td>
+                            <td>{{ complaint.complaint[:50] }}{% if complaint.complaint|length > 50 %}...{% endif %}</td>
+                            <td>
+                                <span class="status-badge status-{{ complaint.status|lower|replace(' ', '-') }}">
+                                    {{ complaint.status }}
+                                </span>
+                            </td>
+                            <td>{{ complaint.locality }}</td>
+                            <td>{{ complaint.created_at.strftime('%Y-%m-%d') if complaint.created_at.strftime else complaint.created_at }}</td>
+                            <td>
+                                <td>
+    <div class="action-buttons">
+        <a href="{{ url_for('complaint_details', complaint_id=complaint.id) }}" 
+           class="btn btn-primary">👁️ View Details</a>
+        {% if complaint.status != 'In Progress' %}
+        <a href="{{ url_for('update_status', complaint_id=complaint.id, new_status='In Progress') }}" 
+           class="btn btn-warning">In Progress</a>
+        {% endif %}
+        {% if complaint.status != 'Resolved' %}
+        <a href="{{ url_for('update_status', complaint_id=complaint.id, new_status='Resolved') }}" 
+           class="btn btn-success">Resolve</a>
+        {% endif %}
+        {% if complaint.status != 'Pending' %}
+        <a href="{{ url_for('update_status', complaint_id=complaint.id, new_status='Pending') }}" 
+           class="btn btn-secondary">Reopen</a>
+        {% endif %}
+    </div>
+</td>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    {% else %}
+                        <tr>
+                            <td colspan="9" class="empty-state">
+                                <h3>No complaints found</h3>
+                                <p>There are currently no complaints in the system</p>
+                            </td>
+                        </tr>
+                    {% endif %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        function filterComplaints() {
+            const statusFilter = document.getElementById('statusFilter').value;
+            const categoryFilter = document.getElementById('categoryFilter').value;
+            const rows = document.querySelectorAll('tbody tr');
+            
+            rows.forEach(row => {
+                const statusCell = row.querySelector('.status-badge');
+                const categoryCell = row.cells[3];
+                
+                if (!statusCell || !categoryCell) return;
+                
+                const status = statusCell.textContent.trim();
+                const category = categoryCell.textContent.trim();
+                
+                const statusMatch = !statusFilter || status === statusFilter;
+                const categoryMatch = !categoryFilter || category === categoryFilter;
+                
+                row.style.display = (statusMatch && categoryMatch) ? '' : 'none';
+            });
+        }
+    </script>
+</body>
+</html>
